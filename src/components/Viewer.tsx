@@ -18,9 +18,12 @@ export function Viewer({ audioData }: { audioData: AudioBuffer }) {
     const data = audioData.getChannelData(0);
     const step = Math.ceil(data.length / width);
     for (let i = 0, x = 0; i < data.length; i += step, x++) {
-      const value = data[i];
-      const y = value * halfHeight;
-      ctx.fillRect(x, halfHeight - y, 1, y * 2);
+      const block = Array.from(data.subarray(i, i + step));
+      const min = Math.min(...block);
+      const max = Math.max(...block);
+      const top = halfHeight - max * halfHeight - 0.2;
+      const bottom = halfHeight - min * halfHeight + 0.2;
+      ctx.fillRect(x, top + 0.5, 1, bottom - top);
     }
   }, [width, height, audioData]);
   return <canvas ref={canvasRef} width={width} height={height} />;
