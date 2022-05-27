@@ -1,5 +1,6 @@
 import React from "react";
 import { DeepFrier } from "./components/DeepFrier";
+import mikkoURL from "./samples/mikko_alafriteeraaminuakiitosenpidakorkeistalampotiloist178e5bc895f81de0c92caeb87009cc0d.mp3";
 
 function App() {
   const [audioContext] = React.useState(() => new AudioContext());
@@ -17,6 +18,14 @@ function App() {
     }
   }
 
+  async function loadExampleSound(event: React.MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    const res = await fetch(mikkoURL);
+    const arr = await res.arrayBuffer();
+    const audio = await audioContext.decodeAudioData(arr);
+    setAudioData(audio);
+  }
+
   return (
     <div className="App">
       <h1>frittikeitin</h1>
@@ -24,6 +33,15 @@ function App() {
         <label>Select audio file</label>
         <input type="file" onChange={handleFile} />
       </div>
+      {!audioData ? (
+        <div>
+          (or{" "}
+          <a href="#" onClick={loadExampleSound}>
+            load an example sound
+          </a>
+          )
+        </div>
+      ) : null}
       {error ? <div className="df-error">{error}</div> : null}
       {audioData ? (
         <DeepFrier audioContext={audioContext} audioData={audioData} />
