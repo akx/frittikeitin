@@ -21,7 +21,8 @@ export function DeepFrier({
   const [speed, setSpeed] = React.useState(0);
   const [clawCount, setClawCount] = React.useState(0);
   const [clawInterval, setClawInterval] = React.useState(0);
-  const [rearrange, setRearrange] = React.useState("");
+  const [rearrangePattern, setRearrangePattern] = React.useState("");
+  const [rearrangeBlockSize, setRearrangeBlockSize] = React.useState(1);
   const [sampleAndHold, setSampleAndHold] = React.useState(0);
   const [powerDistortion, setPowerDistortion] = React.useState(0);
   const [bias, setBias] = React.useState(0);
@@ -31,7 +32,11 @@ export function DeepFrier({
   const friedAudio = React.useMemo(() => {
     const sped = adjustAudioSpeed(audioData, speed);
     const clawed = clawAudio(sped, clawCount, clawInterval);
-    const rearranged = rearrangeAudio(clawed, rearrange);
+    const rearranged = rearrangeAudio(
+      clawed,
+      rearrangePattern,
+      rearrangeBlockSize,
+    );
     const sandhed = sampleAndHoldAudio(rearranged, sampleAndHold);
     const biased = biasAudio(sandhed, bias);
     const powered = powerDistortAudio(biased, powerDistortion);
@@ -45,7 +50,8 @@ export function DeepFrier({
     clipMax,
     clipMin,
     powerDistortion,
-    rearrange,
+    rearrangePattern,
+    rearrangeBlockSize,
     sampleAndHold,
     speed,
   ]);
@@ -77,9 +83,16 @@ export function DeepFrier({
           onChange={setClawInterval}
         />
         <TextInput
-          label="Rearrange samples"
-          value={rearrange}
-          onChange={setRearrange}
+          label="Rearrange pattern"
+          value={rearrangePattern}
+          onChange={setRearrangePattern}
+        />
+        <NumberInput
+          label="Rearrange block size"
+          min={1}
+          max={10000}
+          value={rearrangeBlockSize}
+          onChange={setRearrangeBlockSize}
         />
         <NumberInput
           label="Sample and hold"
