@@ -1,6 +1,7 @@
 import React from "react";
 import { DeepFrier } from "./components/DeepFrier";
 import mikkoURL from "./samples/mikko_alafriteeraaminuakiitosenpidakorkeistalampotiloist178e5bc895f81de0c92caeb87009cc0d.mp3";
+import win95URL from "./samples/win95.mp3";
 
 function App() {
   const [audioContext] = React.useState(() => new AudioContext());
@@ -18,9 +19,11 @@ function App() {
     }
   }
 
-  async function loadExampleSound(event: React.MouseEvent<HTMLAnchorElement>) {
+  async function loadExampleSound(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
-    const res = await fetch(mikkoURL);
+    const url = event.currentTarget.dataset["url"];
+    if (!url) return;
+    const res = await fetch(url);
     const arr = await res.arrayBuffer();
     const audio = await audioContext.decodeAudioData(arr);
     setAudioData(audio);
@@ -35,11 +38,13 @@ function App() {
       </div>
       {!audioData ? (
         <div>
-          (or{" "}
-          <a href="#" onClick={loadExampleSound}>
-            load an example sound
-          </a>
-          )
+          or load an example:{" "}
+          <button onClick={loadExampleSound} data-url={mikkoURL}>
+            mikko
+          </button>{" "}
+          <button onClick={loadExampleSound} data-url={win95URL}>
+            win95
+          </button>
         </div>
       ) : null}
       {error ? <div className="df-error">{error}</div> : null}

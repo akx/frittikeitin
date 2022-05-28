@@ -67,6 +67,7 @@ export function DeepFrier({
           value={speed}
           slider
           onChange={setSpeed}
+          resetValue={0}
         />
         <NumberInput
           label="Claw Count"
